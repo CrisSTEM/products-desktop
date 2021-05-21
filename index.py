@@ -1,4 +1,4 @@
-from sqlite3.dbapi2 import connect
+from sqlite3.dbapi2 import Row, connect
 from tkinter import ttk
 from tkinter import *
 import sqlite3
@@ -41,7 +41,7 @@ class Product:
 
         # Buttoms
         ttk.Button(text = 'DELETE', command=self.delete_product).grid(row = 5, column=0, sticky=W+E)
-        ttk.Button(text = 'EDIT').grid(row = 5, column=1, sticky=W+E)
+        ttk.Button(text = 'EDIT', command=self.edit_product).grid(row = 5, column=1, sticky=W+E)
 
         # Filling the Row
         self.get_products()
@@ -93,6 +93,26 @@ class Product:
         self.run_query(query, (name, ))
         self.message['text'] = 'Record {} Deleted Successfully'.format(name)
         self.get_products()
+
+    def edit_product(self):
+        self.message['text'] = ''
+        try:
+            self.tree.item(self.tree.selection())['text'][0]
+        except IndexError as e:
+            self.message['text'] = 'Please Select a Record'
+            return
+        name = self.tree.item(self.tree.selection())['text']
+        old_price = self.tree.item(self.tree.selection())['values'][0]
+        self.edit_wind = Toplevel()
+        self.edit.wind.title = 'Edit Product'
+
+        #Old Name
+        Label(self.edit_wind, text = 'Old Name: ').grid(row = 0, column=1)
+        Entry(self.edit_wind, textvariable= StringVar(self.edit_wind, value=name), state='readonly').grid(row=0,column=2)
+        #New Name
+        Label(self.edit_wind, [text = 'New Name']).grid(row=1, column=1)
+        new_name = Entry(self.edit_wind)
+        new_name.grid(row=1,column=2)
 
 if __name__ == '__main__':
     window = Tk()   
